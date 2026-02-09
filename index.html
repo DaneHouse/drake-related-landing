@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DaneHouse</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+  <style>
+    @font-face {
+      font-family: 'Helvetica Neue wf';
+      src: url('https://cdn.shopify.com/oxygen-v2/27038/49697/104294/2532641/assets/HelveticaNeueLTPro-Roman-Ss2npeHW.woff2') format('woff2'),
+           url('https://cdn.shopify.com/oxygen-v2/27038/49697/104294/2532641/assets/HelveticaNeueLTPro-Roman-Deki8olo.woff') format('woff');
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Helvetica Neue wf';
+      src: url('https://cdn.shopify.com/oxygen-v2/27038/49697/104294/2532641/assets/HelveticaNeueLTPro-Bd-8YaHn8ov.woff2') format('woff2'),
+           url('https://cdn.shopify.com/oxygen-v2/27038/49697/104294/2532641/assets/HelveticaNeueLTPro-Bd-D1ytGhTs.woff') format('woff');
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Superstudio';
+      src: url('https://cdn.shopify.com/oxygen-v2/27038/49697/104294/2532641/assets/SuperstudioLLWeb-Regular-D8RE70tW.ttf') format('truetype');
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --dark: #0a0a0a;
+      --dark-mid: #1a1a1a;
+      --dark-soft: #2a2420;
+      --warm-amber: #c4a35a;
+      --warm-gold: #d4b060;
+      --cream: #e8dcc8;
+    }
+
+    html {
+      overscroll-behavior-y: none;
+      font-size: 16px;
+      overflow: hidden scroll;
+    }
+
+    ::-webkit-scrollbar { background: transparent; width: 0; }
+    ::-webkit-scrollbar-thumb { background: #000; }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overscroll-behavior-y: none;
+      background: #000;
+      font-family: 'Helvetica Neue wf', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #fff;
+    }
+
+    ::selection { color: #fff !important; background: #000 !important; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+    /* ========== HEADER ========== */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 16px 24px; pointer-events: none;
+    }
+    header * { pointer-events: auto; }
+
+    .nav-left { display: flex; gap: 28px; align-items: center; }
+    .nav-left a, .nav-left button {
+      font-size: 14px; font-weight: 400; letter-spacing: 0.01em;
+      transition: opacity 0.25s ease-in-out; white-space: nowrap; mix-blend-mode: difference;
+    }
+
+    .nav-center {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-family: 'Superstudio', 'Helvetica Neue wf', Helvetica, Arial, sans-serif;
+      font-size: 14px; font-weight: 400; letter-spacing: 0.02em;
+      white-space: nowrap; mix-blend-mode: difference;
+    }
+    .nav-center a { transition: opacity 0.25s ease-in-out; }
+
+    .nav-right { display: flex; gap: 20px; align-items: center; }
+    .nav-right a {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+      transition: opacity 0.25s ease-in-out; white-space: nowrap; mix-blend-mode: difference;
+    }
+
+    .nav-left:hover a, .nav-left:hover button { opacity: 0.2; }
+    .nav-left a:hover, .nav-left button:hover { opacity: 1 !important; }
+    .nav-right:hover a { opacity: 0.2; }
+    .nav-right a:hover { opacity: 1 !important; }
+
+    /* ========== ROOM CONTENT SCAFFOLDING ========== */
+    .room-content {
+      position: absolute; pointer-events: auto; z-index: 3;
+      color: #fff; font-size: 14px;
+    }
+
+    .room-content-card {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px; padding: 20px 24px;
+      max-width: 320px;
+    }
+
+    .room-content-card h3 {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 8px;
+    }
+
+    .room-content-card p {
+      font-size: 15px; line-height: 1.5; font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .room-content-card .tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.1); border-radius: 4px;
+      padding: 3px 8px; margin-right: 6px; margin-bottom: 4px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .room-content-card a {
+      color: var(--warm-gold); text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .room-content-card a:hover { color: #fff; }
+
+    /* Lounge content */
+    .scene-lounge .content-mood { bottom: 12%; left: 5%; }
+    .scene-lounge .content-thought { top: 15%; right: 5%; }
+
+    /* Kitchen content */
+    .scene-kitchen .content-diet { bottom: 15%; left: 5%; }
+    .scene-kitchen .content-recipe { top: 15%; right: 5%; }
+
+    /* Court content */
+    .scene-court .content-stats { top: 12%; left: 5%; }
+    .scene-court .content-kicks { bottom: 12%; right: 5%; }
+
+    /* Mini-game */
+    .mini-game-container {
+      position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%);
+      pointer-events: auto; z-index: 5; text-align: center;
+    }
+    .mini-game-btn {
+      background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-radius: 20px; padding: 8px 20px; cursor: pointer;
+      font-size: 13px; font-weight: 700; color: #fff;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    .mini-game-btn:hover { background: rgba(0, 0, 0, 0.8); border-color: rgba(255, 255, 255, 0.6); }
+
+    .game-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 20; pointer-events: auto; display: none;
+    }
+    .game-overlay.active { display: block; }
+    .game-canvas-wrap {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .game-hud {
+      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 24px; align-items: center; z-index: 22;
+    }
+    .game-score {
+      font-size: 28px; font-weight: 700; color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .game-close {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff; transition: all 0.2s;
+    }
+    .game-close:hover { background: rgba(255,255,255,0.3); }
+
+    .game-court {
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+      cursor: crosshair;
+    }
+    .game-hoop {
+      position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 60px;
+    }
+    .game-hoop-ring {
+      width: 60px; height: 6px; border: 3px solid #ff6b35;
+      border-radius: 50%; margin: 0 auto;
+    }
+    .game-hoop-net {
+      width: 50px; height: 30px; margin: 0 auto;
+      border-left: 2px solid rgba(255,255,255,0.3);
+      border-right: 2px solid rgba(255,255,255,0.3);
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      border-radius: 0 0 8px 8px;
+    }
+    .game-ball {
+      position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff8c42, #c75000);
+      border: 2px solid #aa4400;
+      cursor: pointer; transition: none; z-index: 23;
+    }
+    .game-ball.shooting {
+      transition: all 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+    .game-result {
+      position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 48px; font-weight: 700; opacity: 0;
+      transition: opacity 0.3s ease; pointer-events: none; z-index: 24;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .game-result.show { opacity: 1; }
+    .game-result.swish { color: #4cff7c; }
+    .game-result.miss { color: #ff4c4c; }
+
+    /* Backyard content */
+    .scene-backyard .content-dog { bottom: 12%; left: 5%; }
+    .scene-backyard .content-travel { top: 15%; right: 5%; }
+
+    /* Closet content */
+    .scene-closet .content-outfit { bottom: 12%; left: 5%; }
+    .scene-closet .content-grail { top: 15%; right: 5%; }
+
+    /* Lab content */
+    .scene-lab .content-build { bottom: 12%; left: 5%; }
+    .scene-lab .content-stack { top: 15%; right: 5%; }
+
+    @media (max-width: 768px) {
+      .room-content-card { max-width: 240px; padding: 14px 16px; }
+      .room-content-card p { font-size: 13px; }
+      .mini-game-container { bottom: 4%; }
+      .game-score { font-size: 22px; }
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    main { transition: filter 0.7s ease-in-out; }
+    main.blurred { filter: blur(25px); pointer-events: none; }
+
+    /* ========== ROOM SECTION ========== */
+    .room-section {
+      position: relative; width: 100%; height: 100vh;
+      overflow: hidden; user-select: none; -webkit-user-select: none; background: #000;
+    }
+
+    .room-bg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      transition: opacity 0.45s ease;
+    }
+
+    .room-bg-image {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+    }
+    .room-bg-image::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    /* ========== ROOM TRANSITION ========== */
+    .room-section.transitioning .room-bg,
+    .room-section.transitioning .room-scene,
+    .room-section.transitioning .beacon,
+    .room-section.transitioning .hotspot { opacity: 0; }
+
+    .room-section .room-bg,
+    .room-section .room-scene,
+    .room-section .beacon,
+    .room-section .hotspot { transition: opacity 0.45s ease; }
+
+    /* ========== SCENE SYSTEM ========== */
+    .room-scene {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 2; pointer-events: none; overflow: hidden;
+    }
+
+    /* ========== BEACONS ========== */
+    .beacon {
+      position: absolute; height: 40px; min-width: 40px; border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.3);
+      display: flex; align-items: center; justify-content: center; padding: 0;
+      cursor: pointer; transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translate(-50%, -50%); z-index: 10; overflow: hidden;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .beacon:hover {
+      background: rgba(0, 0, 0, 0.55); border-color: rgba(255, 255, 255, 0.95);
+      padding: 0 18px;
+    }
+    .beacon .beacon-icon {
+      width: 16px; height: 16px; fill: none; stroke: #fff;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0; transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .beacon:hover .beacon-icon { width: 0; height: 0; opacity: 0; }
+
+    .beacon-label {
+      font-size: 14px; font-weight: 400; letter-spacing: 0.01em;
+      white-space: nowrap; max-width: 0; opacity: 0; overflow: hidden;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .beacon:hover .beacon-label { max-width: 250px; opacity: 1; }
+
+    .beacon.beacon-enter {
+      height: 56px; min-width: 56px; border-radius: 28px;
+      border-color: rgba(255, 200, 100, 0.8); background: rgba(180, 130, 50, 0.2);
+    }
+    .beacon.beacon-enter:hover {
+      border-color: rgba(255, 210, 120, 1); background: rgba(180, 130, 50, 0.35);
+      padding: 0 22px;
+    }
+    .beacon.beacon-enter .beacon-icon { width: 20px; height: 20px; }
+
+    /* ========== HOTSPOTS ========== */
+    .hotspot {
+      position: absolute; width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.65); cursor: pointer;
+      transform: translate(-50%, -50%); z-index: 8;
+      transition: all 0.2s ease; border: none; padding: 0;
+    }
+    .hotspot::after {
+      content: ''; position: absolute; top: -6px; left: -6px;
+      width: 22px; height: 22px; border-radius: 50%; background: transparent;
+    }
+    .hotspot:hover {
+      background: rgba(255, 255, 255, 0.95);
+      transform: translate(-50%, -50%) scale(1.4);
+    }
+    .hotspot-tooltip {
+      position: absolute; bottom: calc(100% + 12px); left: 50%;
+      transform: translateX(-50%); white-space: nowrap;
+      font-size: 14px; font-weight: 400; letter-spacing: 0.01em;
+      background: #fff; color: #000; padding: 6px 14px; border-radius: 4px;
+      opacity: 0; transition: opacity 0.15s ease; pointer-events: none;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+    .hotspot:hover .hotspot-tooltip { opacity: 1; }
+
+    /* ========== BOTTOM BAR ========== */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 20px 24px; pointer-events: none;
+    }
+    .bottom-bar * { pointer-events: auto; }
+    .explore-trigger { cursor: pointer; transition: opacity 0.3s ease; }
+    .explore-trigger:hover { opacity: 0.7; }
+    .explore-text {
+      font-size: 14px; font-weight: 400; letter-spacing: 0.01em; mix-blend-mode: difference;
+    }
+    .copyright-symbol { font-size: 14px; font-weight: 400; mix-blend-mode: difference; }
+
+    /* ========== FOOTER ========== */
+    .footer-section {
+      position: relative; width: 100%; min-height: 100vh; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .footer-bg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(ellipse at 50% 30%, #2a2218 0%, #1a1610 60%, #000 100%);
+    }
+    .footer-content {
+      position: relative; z-index: 5; padding: 0 24px 80px;
+      display: flex; flex-direction: column; align-items: flex-end;
+    }
+    .footer-social { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-bottom: 24px; }
+    .footer-social a { font-size: 14px; font-weight: 700; transition: opacity 0.5s; }
+    .footer-links { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .footer-links a { font-size: 14px; font-weight: 700; transition: opacity 0.5s; }
+    .footer-social:hover a, .footer-links:hover a { opacity: 0.2; }
+    .footer-social a:hover, .footer-links a:hover { opacity: 1 !important; }
+
+    /* ========== EXPLORE OVERLAY ========== */
+    .explore-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 39;
+      pointer-events: none; opacity: 0; transition: opacity 0.5s ease-in-out; overflow-y: auto;
+    }
+    .explore-overlay.open { opacity: 1; pointer-events: auto; }
+    .explore-room-list {
+      position: absolute; bottom: 80px; left: 24px; list-style: none;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .explore-room-list li { line-height: 1.2; }
+    .explore-room-list button {
+      font-size: clamp(32px, 4vw, 48px); font-weight: 700; color: #fff;
+      display: inline-block; transition: opacity 0.25s ease-in-out; padding: 1px 0;
+    }
+    .explore-room-list li.active button { color: rgba(220, 180, 100, 1); }
+    .explore-room-list li.disabled button { color: rgba(180, 140, 90, 0.45); }
+    .explore-room-list:hover button { opacity: 0.2; }
+    .explore-room-list button:hover { opacity: 1 !important; }
+    .explore-room-list li.disabled button:hover { opacity: 0.25 !important; cursor: default; }
+
+    header.explore-open .nav-left a, header.explore-open .nav-left button { opacity: 0.3; }
+    header.explore-open .nav-center a { opacity: 0.3; }
+    header.explore-open .nav-right a { opacity: 0.8; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      header { padding: 12px 16px; }
+      .nav-left { gap: 16px; }
+      .nav-left a, .nav-left button, .nav-right a, .nav-center { font-size: 12px; }
+      .bottom-bar { padding: 16px; }
+      .explore-room-list { left: 16px; bottom: 60px; }
+      .explore-room-list button { font-size: 28px; }
+      .footer-content { padding: 0 16px 60px; }
+      .beacon { height: 32px; min-width: 32px; border-radius: 16px; }
+      .beacon .beacon-icon { width: 12px; height: 12px; }
+      .beacon:hover { padding: 0 12px; }
+      .beacon-label { font-size: 12px; }
+      .beacon.beacon-enter { height: 44px; min-width: 44px; border-radius: 22px; }
+      .beacon.beacon-enter .beacon-icon { width: 16px; height: 16px; }
+      .hotspot { width: 8px; height: 8px; }
+      .hotspot-tooltip { font-size: 12px; padding: 4px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <nav class="nav-left">
+      <a href="#" data-nav="lounge">Lounge</a>
+      <a href="#" data-nav="kitchen">Kitchen</a>
+      <a href="#" data-nav="court">Court</a>
+      <a href="#" data-nav="closet">Closet</a>
+      <a href="#" data-nav="lab">Lab</a>
+      <a href="#" data-nav="backyard">Backyard</a>
+    </nav>
+    <div class="nav-center">
+      <a href="#" data-nav="front">DaneHouse</a>
+    </div>
+    <nav class="nav-right">
+      <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
+      <a href="#" target="_blank" rel="noopener">Resume</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="room-section" id="roomSection">
+      <div class="room-bg" id="roomBg"></div>
+      <div class="room-scene" id="roomScene"></div>
+    </section>
+
+    <section class="footer-section">
+      <div class="footer-bg"></div>
+      <div class="footer-content">
+        <div class="footer-social">
+          <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/papadane" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://x.com/papadane" target="_blank" rel="noopener">X (Twitter)</a>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:hello@danehouse.dev">Email</a>
+          <a href="#" target="_blank" rel="noopener">Resume</a>
+          <a href="https://github.com/papadane/drake-related-landing" target="_blank" rel="noopener">Source Code</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="bottom-bar" id="bottomBar">
+    <div class="explore-trigger" id="exploreTrigger" role="button" tabindex="0">
+      <span class="explore-text">Explore</span>
+    </div>
+    <div class="copyright-symbol">&reg;</div>
+  </div>
+
+  <div class="explore-overlay" id="exploreOverlay">
+    <ul class="explore-room-list" id="exploreRoomList"></ul>
+  </div>
+
+  <script>
+    // ========== SCENE HTML BUILDERS ==========
+    function getSceneHtml(slug) {
+      switch (slug) {
+        case 'lounge':
+          return '' +
+            '<div class="room-content content-mood">' +
+              '<div class="room-content-card">' +
+                '<h3>Current Mood</h3>' +
+                '<p>Locked in. Building things that matter.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Focused</span>' +
+                  '<span class="tag">Creative</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-thought">' +
+              '<div class="room-content-card">' +
+                '<h3>Now Playing</h3>' +
+                '<p>Update this with whatever is on rotation.</p>' +
+                '<div style="margin-top:8px">' +
+                  '<span class="tag">Playlist</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+        case 'kitchen':
+          return '' +
+            '<div class="room-content content-diet">' +
+              '<div class="room-content-card">' +
+                '<h3>Current Diet</h3>' +
+                '<p>High protein, clean eating. Meal prepping weekly.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">High Protein</span>' +
+                  '<span class="tag">Clean</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-recipe">' +
+              '<div class="room-content-card">' +
+                '<h3>Favorite Recipe</h3>' +
+                '<p>Add your go-to recipe here. Swap it out anytime.</p>' +
+              '</div>' +
+            '</div>';
+
+        case 'court':
+          return '' +
+            '<div class="room-content content-stats">' +
+              '<div class="room-content-card">' +
+                '<h3>Toronto Raptors</h3>' +
+                '<p style="font-size:22px;font-weight:700;margin-bottom:4px">We The North</p>' +
+                '<p style="font-size:12px;color:rgba(255,255,255,0.5)">Live stats coming soon &mdash; NBA API integration</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">2024-25 Season</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-kicks">' +
+              '<div class="room-content-card">' +
+                '<h3>My Kicks</h3>' +
+                '<p>Current basketball shoe rotation. Add your collection here.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Nike</span>' +
+                  '<span class="tag">Jordan</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="mini-game-container">' +
+              '<button class="mini-game-btn" onclick="startMiniGame()">Play Ball</button>' +
+            '</div>' +
+            '<div class="game-overlay" id="gameOverlay">' +
+              '<div class="game-canvas-wrap" id="gameCanvasWrap">' +
+                '<div class="game-hud">' +
+                  '<div class="game-score" id="gameScore">0 / 0</div>' +
+                  '<button class="game-close" onclick="closeMiniGame()">&times;</button>' +
+                '</div>' +
+                '<div class="game-hoop">' +
+                  '<div class="game-hoop-ring"></div>' +
+                  '<div class="game-hoop-net"></div>' +
+                '</div>' +
+                '<div class="game-court" id="gameCourt">' +
+                  '<div class="game-ball" id="gameBall"></div>' +
+                  '<div class="game-result" id="gameResult"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+        case 'backyard':
+          return '' +
+            '<div class="room-content content-dog">' +
+              '<div class="room-content-card">' +
+                '<h3>Meet The Dog</h3>' +
+                '<p>The dalmatian. Follow her adventures.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<a href="https://instagram.com" target="_blank" rel="noopener">Follow on Instagram &rarr;</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-travel">' +
+              '<div class="room-content-card">' +
+                '<h3>Recent Trip</h3>' +
+                '<p>Add your latest travel destination and photos here.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Travel</span>' +
+                  '<span class="tag">Outdoors</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+        case 'closet':
+          return '' +
+            '<div class="room-content content-outfit">' +
+              '<div class="room-content-card">' +
+                '<h3>Today\'s Fit</h3>' +
+                '<p>Current outfit rotation. Update with what you\'re wearing.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Streetwear</span>' +
+                  '<span class="tag">Essentials</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-grail">' +
+              '<div class="room-content-card">' +
+                '<h3>Grail Piece</h3>' +
+                '<p>That one piece in the collection. Showcase it here.</p>' +
+              '</div>' +
+            '</div>';
+
+        case 'lab':
+          return '' +
+            '<div class="room-content content-build">' +
+              '<div class="room-content-card">' +
+                '<h3>Current Build</h3>' +
+                '<p>DaneHouse &mdash; a room-based interactive brand experience.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Active</span>' +
+                  '<span class="tag">Shipping</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-stack">' +
+              '<div class="room-content-card">' +
+                '<h3>Tech Stack</h3>' +
+                '<p>HTML, CSS, JS &mdash; vanilla. AI-generated imagery. Claude Code.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Vanilla JS</span>' +
+                  '<span class="tag">Claude</span>' +
+                  '<span class="tag">Nano Banana</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+        default:
+          return '';
+      }
+    }
+
+    // ========== ROOM DATA ==========
+    const ROOMS = {
+      front: {
+        name: 'Front',
+        slug: 'front',
+        gradient: 'linear-gradient(180deg, #0a0a0a 0%, #1a1814 50%, #0a0a0a 100%)',
+        bgImage: 'images/front.jpg',
+        beacons: [
+          { targetRoom: 'lounge', left: 50, top: 72, direction: 'enter', tooltip: 'Enter House' }
+        ],
+        hotspots: [],
+        disabled: false
+      },
+      lounge: {
+        name: 'Lounge',
+        slug: 'lounge',
+        gradient: 'linear-gradient(180deg, #1a1510 0%, #2a2018 50%, #0e0c08 100%)',
+        bgImage: 'images/lounge.jpg',
+        beacons: [
+          { targetRoom: 'kitchen', left: 5, top: 45, direction: 'left', tooltip: 'Kitchen' },
+          { targetRoom: 'closet', left: 92, top: 55, direction: 'right', tooltip: 'Closet' }
+        ],
+        hotspots: [
+          { left: 28, top: 75, label: 'Now Playing' },
+          { left: 18, top: 57, label: 'Current Mood' },
+          { left: 82, top: 68, label: 'Featured Thought' }
+        ],
+        disabled: false
+      },
+      kitchen: {
+        name: 'Kitchen',
+        slug: 'kitchen',
+        gradient: 'linear-gradient(180deg, #0e0c08 0%, #1a1610 50%, #0a0806 100%)',
+        bgImage: 'images/kitchen.jpg',
+        beacons: [
+          { targetRoom: 'lounge', left: 92, top: 50, direction: 'right', tooltip: 'Lounge' },
+          { targetRoom: 'backyard', left: 5, top: 30, direction: 'left', tooltip: 'Backyard' }
+        ],
+        hotspots: [
+          { left: 50, top: 63, label: 'Current Diet' },
+          { left: 15, top: 40, label: 'Favorite Recipe' },
+          { left: 28, top: 55, label: 'Meal Prep' }
+        ],
+        disabled: false
+      },
+      court: {
+        name: 'Court',
+        slug: 'court',
+        gradient: 'linear-gradient(180deg, #1a1610 0%, #2a2018 50%, #0e0c08 100%)',
+        bgImage: 'images/court.jpg',
+        beacons: [
+          { targetRoom: 'lounge', left: 8, top: 88, direction: 'down', tooltip: 'Lounge' },
+          { targetRoom: 'backyard', left: 92, top: 30, direction: 'right', tooltip: 'Backyard' }
+        ],
+        hotspots: [
+          { left: 50, top: 35, label: 'My Kicks' },
+          { left: 35, top: 60, label: 'Raptors Live' },
+          { left: 70, top: 50, label: 'Top Highlight' }
+        ],
+        disabled: false
+      },
+      backyard: {
+        name: 'Backyard',
+        slug: 'backyard',
+        gradient: 'linear-gradient(180deg, #0a0a10 0%, #1a1820 50%, #0a0a0a 100%)',
+        bgImage: 'images/backyard.jpg',
+        beacons: [
+          { targetRoom: 'kitchen', left: 8, top: 50, direction: 'left', tooltip: 'Kitchen' },
+          { targetRoom: 'court', left: 92, top: 50, direction: 'right', tooltip: 'Court' }
+        ],
+        hotspots: [
+          { left: 26, top: 62, label: 'Meet The Dog' },
+          { left: 75, top: 60, label: 'Recent Trip' },
+          { left: 50, top: 30, label: 'Outdoor Life' }
+        ],
+        disabled: false
+      },
+      closet: {
+        name: 'Closet',
+        slug: 'closet',
+        gradient: 'radial-gradient(ellipse at 50% 40%, #2a2018 0%, #1a1410 40%, #0a0806 100%)',
+        bgImage: 'images/closet.jpg',
+        beacons: [
+          { targetRoom: 'lounge', left: 8, top: 50, direction: 'left', tooltip: 'Lounge' },
+          { targetRoom: 'lab', left: 92, top: 50, direction: 'right', tooltip: 'Lab' }
+        ],
+        hotspots: [
+          { left: 12, top: 32, label: "Today's Fit" },
+          { left: 12, top: 48, label: 'Rotation' },
+          { left: 88, top: 32, label: 'Grail Piece' }
+        ],
+        disabled: false
+      },
+      lab: {
+        name: 'Lab',
+        slug: 'lab',
+        gradient: 'linear-gradient(180deg, #1a1210 0%, #2a1e18 50%, #0e0a08 100%)',
+        bgImage: 'images/lab.jpg',
+        beacons: [
+          { targetRoom: 'court', left: 8, top: 30, direction: 'left', tooltip: 'Court' },
+          { targetRoom: 'closet', left: 92, top: 30, direction: 'right', tooltip: 'Closet' }
+        ],
+        hotspots: [
+          { left: 28, top: 35, label: 'Current Build' },
+          { left: 48, top: 33, label: 'Tech Stack' },
+          { left: 52, top: 47, label: 'Latest Ship' }
+        ],
+        disabled: false
+      }
+    };
+
+    // ========== STATE ==========
+    let currentRoom = 'front';
+    let isTransitioning = false;
+    let exploreOpen = false;
+
+    // ========== DOM REFS ==========
+    const roomSection = document.getElementById('roomSection');
+    const roomBg = document.getElementById('roomBg');
+    const roomScene = document.getElementById('roomScene');
+    const exploreOverlay = document.getElementById('exploreOverlay');
+    const exploreRoomList = document.getElementById('exploreRoomList');
+    const header = document.getElementById('header');
+    const main = document.getElementById('main');
+    const exploreTrigger = document.getElementById('exploreTrigger');
+
+    // ========== SVG ARROW HELPERS ==========
+    function getArrowSvg(direction) {
+      const cls = 'beacon-icon';
+      switch (direction) {
+        case 'left':  return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+        case 'right': return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+        case 'up':    return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+        case 'down':  return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        case 'enter': return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+        default:      return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+      }
+    }
+
+    function getBeaconLabel(b) {
+      const target = ROOMS[b.targetRoom];
+      const name = target ? target.name : b.tooltip;
+      if (b.direction === 'enter') return 'Enter ' + name + ' \u2192';
+      if (b.direction === 'left' || b.direction === 'up') return '\u2190 Enter ' + name;
+      return 'Enter ' + name + ' \u2192';
+    }
+
+    // ========== RENDER ROOM ==========
+    function renderRoom(slug) {
+      const room = ROOMS[slug];
+      if (!room) return;
+
+      // Background
+      if (room.bgImage) {
+        roomBg.style.background = 'none';
+        roomBg.innerHTML = '';
+        const imgLayer = document.createElement('div');
+        imgLayer.className = 'room-bg-image';
+        imgLayer.style.backgroundImage = 'url(' + room.bgImage + ')';
+        roomBg.appendChild(imgLayer);
+      } else {
+        roomBg.style.background = room.gradient;
+        roomBg.innerHTML = '';
+      }
+
+      // Scene
+      roomScene.className = 'room-scene scene-' + slug;
+      roomScene.innerHTML = getSceneHtml(slug);
+
+      // Clear old beacons, hotspots
+      roomSection.querySelectorAll('.beacon, .hotspot').forEach(el => el.remove());
+
+      // Create beacons
+      room.beacons.forEach(b => {
+        const beacon = document.createElement('button');
+        beacon.className = 'beacon' + (b.direction === 'enter' ? ' beacon-enter' : '');
+        beacon.style.left = b.left + '%';
+        beacon.style.top = b.top + '%';
+        beacon.innerHTML = getArrowSvg(b.direction) +
+          '<span class="beacon-label">' + getBeaconLabel(b) + '</span>';
+        beacon.addEventListener('click', () => navigateToRoom(b.targetRoom));
+        roomSection.appendChild(beacon);
+      });
+
+      // Create hotspots
+      if (room.hotspots) {
+        room.hotspots.forEach(h => {
+          const dot = document.createElement('button');
+          dot.className = 'hotspot';
+          dot.style.left = h.left + '%';
+          dot.style.top = h.top + '%';
+          dot.innerHTML = '<span class="hotspot-tooltip">' + h.label + '</span>';
+          roomSection.appendChild(dot);
+        });
+      }
+
+      updateExploreActive(slug);
+    }
+
+    // ========== NAVIGATE ==========
+    function navigateToRoom(slug) {
+      if (isTransitioning || slug === currentRoom) return;
+      if (!ROOMS[slug] || ROOMS[slug].disabled) return;
+
+      isTransitioning = true;
+      window.scrollTo(0, 0);
+      roomSection.classList.add('transitioning');
+
+      setTimeout(() => {
+        currentRoom = slug;
+        renderRoom(slug);
+        history.pushState(null, '', '#' + slug);
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            roomSection.classList.remove('transitioning');
+            setTimeout(() => { isTransitioning = false; }, 450);
+          });
+        });
+      }, 450);
+    }
+
+    // ========== EXPLORE OVERLAY ==========
+    function buildExploreList() {
+      exploreRoomList.innerHTML = '';
+      Object.values(ROOMS).forEach(room => {
+        const li = document.createElement('li');
+        if (room.disabled) li.classList.add('disabled');
+        if (room.slug === currentRoom) li.classList.add('active');
+        const btn = document.createElement('button');
+        btn.textContent = room.name;
+        btn.setAttribute('data-room', room.slug);
+        btn.addEventListener('click', () => {
+          if (room.disabled) return;
+          navigateToRoom(room.slug);
+          if (exploreOpen) toggleExplore();
+        });
+        li.appendChild(btn);
+        exploreRoomList.appendChild(li);
+      });
+    }
+
+    function updateExploreActive(slug) {
+      exploreRoomList.querySelectorAll('li').forEach(li => {
+        const btn = li.querySelector('button');
+        if (btn && btn.getAttribute('data-room') === slug) li.classList.add('active');
+        else li.classList.remove('active');
+      });
+    }
+
+    function toggleExplore() {
+      exploreOpen = !exploreOpen;
+      if (exploreOpen) {
+        exploreOverlay.classList.add('open');
+        header.classList.add('explore-open');
+        main.classList.add('blurred');
+      } else {
+        exploreOverlay.classList.remove('open');
+        header.classList.remove('explore-open');
+        main.classList.remove('blurred');
+      }
+    }
+
+    exploreTrigger.addEventListener('click', toggleExplore);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && exploreOpen) toggleExplore(); });
+    exploreOverlay.addEventListener('click', (e) => {
+      if (e.target === exploreOverlay || !e.target.closest('.explore-room-list')) {
+        if (exploreOpen) toggleExplore();
+      }
+    });
+
+    document.querySelectorAll('[data-nav]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = link.getAttribute('data-nav');
+        if (target) { window.scrollTo(0, 0); navigateToRoom(target); if (exploreOpen) toggleExplore(); }
+      });
+    });
+
+    // ========== HASH ROUTING ==========
+    function getInitialRoom() {
+      const hash = location.hash.replace('#', '');
+      if (hash && ROOMS[hash]) return hash;
+      return 'front';
+    }
+
+    window.addEventListener('popstate', () => {
+      const hash = location.hash.replace('#', '');
+      if (hash && ROOMS[hash] && hash !== currentRoom) {
+        isTransitioning = true;
+        window.scrollTo(0, 0);
+        roomSection.classList.add('transitioning');
+        setTimeout(() => {
+          currentRoom = hash;
+          renderRoom(hash);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              roomSection.classList.remove('transitioning');
+              setTimeout(() => { isTransitioning = false; }, 450);
+            });
+          });
+        }, 450);
+      }
+    });
+
+    // ========== INIT ==========
+    function init() {
+      currentRoom = getInitialRoom();
+      buildExploreList();
+      renderRoom(currentRoom);
+      history.replaceState(null, '', '#' + currentRoom);
+    }
+
+    // ========== BASKETBALL MINI-GAME ==========
+    let gameActive = false;
+    let gameMade = 0;
+    let gameAttempts = 0;
+    let gameShooting = false;
+
+    function startMiniGame() {
+      const overlay = document.getElementById('gameOverlay');
+      if (!overlay) return;
+      gameActive = true;
+      gameMade = 0;
+      gameAttempts = 0;
+      gameShooting = false;
+      overlay.classList.add('active');
+      updateGameScore();
+      resetBall();
+
+      const court = document.getElementById('gameCourt');
+      if (court) court.addEventListener('click', shootBall);
+    }
+
+    function closeMiniGame() {
+      const overlay = document.getElementById('gameOverlay');
+      if (!overlay) return;
+      gameActive = false;
+      overlay.classList.remove('active');
+
+      const court = document.getElementById('gameCourt');
+      if (court) court.removeEventListener('click', shootBall);
+    }
+
+    function updateGameScore() {
+      const el = document.getElementById('gameScore');
+      if (el) el.textContent = gameMade + ' / ' + gameAttempts;
+    }
+
+    function resetBall() {
+      const ball = document.getElementById('gameBall');
+      if (!ball) return;
+      ball.classList.remove('shooting');
+      ball.style.transition = 'none';
+      ball.style.bottom = '15%';
+      ball.style.left = '50%';
+      ball.style.transform = 'translateX(-50%) scale(1)';
+      ball.style.opacity = '1';
+    }
+
+    function shootBall(e) {
+      if (gameShooting || !gameActive) return;
+      gameShooting = true;
+      gameAttempts++;
+
+      const ball = document.getElementById('gameBall');
+      const result = document.getElementById('gameResult');
+      if (!ball || !result) return;
+
+      const made = Math.random() < 0.45;
+
+      ball.style.transition = 'all 0.6s cubic-bezier(0.2, 0.8, 0.3, 1)';
+      ball.classList.add('shooting');
+
+      if (made) {
+        ball.style.bottom = '80%';
+        ball.style.left = '50%';
+        ball.style.transform = 'translateX(-50%) scale(0.5)';
+      } else {
+        const side = Math.random() > 0.5 ? '58%' : '42%';
+        ball.style.bottom = '72%';
+        ball.style.left = side;
+        ball.style.transform = 'translateX(-50%) scale(0.6)';
+      }
+
+      setTimeout(() => {
+        if (made) {
+          gameMade++;
+          result.textContent = 'Swish!';
+          result.className = 'game-result show swish';
+        } else {
+          result.textContent = 'Miss';
+          result.className = 'game-result show miss';
+        }
+        updateGameScore();
+
+        setTimeout(() => {
+          result.className = 'game-result';
+          ball.style.transition = 'none';
+          ball.style.opacity = '0';
+
+          setTimeout(() => {
+            resetBall();
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                ball.style.transition = 'opacity 0.3s ease';
+                ball.style.opacity = '1';
+                gameShooting = false;
+              });
+            });
+          }, 100);
+        }, 600);
+      }, 650);
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
