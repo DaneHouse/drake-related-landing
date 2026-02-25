@@ -102,6 +102,18 @@
     .nav-right:hover a { opacity: 0.2; }
     .nav-right a:hover { opacity: 1 !important; }
 
+    /* ========== GATE OVERLAY ========== */
+    .gate-title {
+      position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 4; pointer-events: none; text-align: center;
+    }
+    .gate-title h1 {
+      font-family: 'Superstudio', 'Helvetica Neue wf', Helvetica, Arial, sans-serif;
+      font-size: clamp(48px, 8vw, 96px); font-weight: 400; letter-spacing: 0.06em;
+      text-transform: uppercase; color: #fff;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.6), 0 0 80px rgba(0,0,0,0.3);
+    }
+
     /* ========== ROOM CONTENT SCAFFOLDING ========== */
     .room-content {
       position: absolute; pointer-events: auto; z-index: 3;
@@ -152,6 +164,25 @@
     /* Court content */
     .scene-court .content-stats { top: 12%; left: 5%; }
     .scene-court .content-kicks { bottom: 12%; right: 5%; }
+
+    /* Gym content */
+    .scene-gym .content-routine { bottom: 12%; left: 5%; }
+    .scene-gym .content-goals { top: 15%; right: 5%; }
+
+    /* Backyard content */
+    .scene-backyard .content-dog { bottom: 12%; left: 5%; }
+
+    /* Closet content */
+    .scene-closet .content-outfit { bottom: 12%; left: 5%; }
+    .scene-closet .content-grail { top: 15%; right: 5%; }
+
+    /* Lab content */
+    .scene-lab .content-build { bottom: 12%; left: 5%; }
+    .scene-lab .content-stack { top: 15%; right: 5%; }
+
+    /* Stable content */
+    .scene-stable .content-agents { bottom: 12%; left: 5%; }
+    .scene-stable .content-status { top: 15%; right: 5%; }
 
     /* Mini-game */
     .mini-game-container {
@@ -231,18 +262,6 @@
     .game-result.show { opacity: 1; }
     .game-result.swish { color: #4cff7c; }
     .game-result.miss { color: #ff4c4c; }
-
-    /* Backyard content */
-    .scene-backyard .content-dog { bottom: 12%; left: 5%; }
-    .scene-backyard .content-travel { top: 15%; right: 5%; }
-
-    /* Closet content */
-    .scene-closet .content-outfit { bottom: 12%; left: 5%; }
-    .scene-closet .content-grail { top: 15%; right: 5%; }
-
-    /* Lab content */
-    .scene-lab .content-build { bottom: 12%; left: 5%; }
-    .scene-lab .content-stack { top: 15%; right: 5%; }
 
     @media (max-width: 768px) {
       .room-content-card { max-width: 240px; padding: 14px 16px; }
@@ -431,6 +450,7 @@
       .beacon.beacon-enter .beacon-icon { width: 16px; height: 16px; }
       .hotspot { width: 8px; height: 8px; }
       .hotspot-tooltip { font-size: 12px; padding: 4px 10px; }
+      .gate-title h1 { font-size: clamp(36px, 10vw, 64px); }
     }
   </style>
 </head>
@@ -441,12 +461,14 @@
       <a href="#" data-nav="lounge">Lounge</a>
       <a href="#" data-nav="kitchen">Kitchen</a>
       <a href="#" data-nav="court">Court</a>
+      <a href="#" data-nav="gym">Gym</a>
+      <a href="#" data-nav="backyard">Backyard</a>
       <a href="#" data-nav="closet">Closet</a>
       <a href="#" data-nav="lab">Lab</a>
-      <a href="#" data-nav="backyard">Backyard</a>
+      <a href="#" data-nav="stable">Stable</a>
     </nav>
     <div class="nav-center">
-      <a href="#" data-nav="front">DaneHouse</a>
+      <a href="#" data-nav="gate">DaneHouse</a>
     </div>
     <nav class="nav-right">
       <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
@@ -471,7 +493,7 @@
         <div class="footer-links">
           <a href="mailto:hello@danehouse.dev">Email</a>
           <a href="#" target="_blank" rel="noopener">Resume</a>
-          <a href="https://github.com/papadane/drake-related-landing" target="_blank" rel="noopener">Source Code</a>
+          <a href="https://github.com/DaneHouse/drake-related-landing" target="_blank" rel="noopener">Source Code</a>
         </div>
       </div>
     </section>
@@ -492,6 +514,12 @@
     // ========== SCENE HTML BUILDERS ==========
     function getSceneHtml(slug) {
       switch (slug) {
+        case 'gate':
+          return '' +
+            '<div class="gate-title">' +
+              '<h1>DaneHouse</h1>' +
+            '</div>';
+
         case 'lounge':
           return '' +
             '<div class="room-content content-mood">' +
@@ -548,7 +576,7 @@
             '<div class="room-content content-kicks">' +
               '<div class="room-content-card">' +
                 '<h3>My Kicks</h3>' +
-                '<p>Current basketball shoe rotation. Add your collection here.</p>' +
+                '<p>Current basketball shoe rotation.</p>' +
                 '<div style="margin-top:10px">' +
                   '<span class="tag">Nike</span>' +
                   '<span class="tag">Jordan</span>' +
@@ -575,6 +603,29 @@
               '</div>' +
             '</div>';
 
+        case 'gym':
+          return '' +
+            '<div class="room-content content-routine">' +
+              '<div class="room-content-card">' +
+                '<h3>Current Routine</h3>' +
+                '<p>Push / Pull / Legs. 6 days a week.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">PPL</span>' +
+                  '<span class="tag">6x Week</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-goals">' +
+              '<div class="room-content-card">' +
+                '<h3>Fitness Goals</h3>' +
+                '<p>Stay consistent. Progressive overload. No excuses.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Strength</span>' +
+                  '<span class="tag">Discipline</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
         case 'backyard':
           return '' +
             '<div class="room-content content-dog">' +
@@ -583,16 +634,6 @@
                 '<p>The dalmatian. Follow her adventures.</p>' +
                 '<div style="margin-top:10px">' +
                   '<a href="https://instagram.com" target="_blank" rel="noopener">Follow on Instagram &rarr;</a>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="room-content content-travel">' +
-              '<div class="room-content-card">' +
-                '<h3>Recent Trip</h3>' +
-                '<p>Add your latest travel destination and photos here.</p>' +
-                '<div style="margin-top:10px">' +
-                  '<span class="tag">Travel</span>' +
-                  '<span class="tag">Outdoors</span>' +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -605,7 +646,7 @@
                 '<p>Current outfit rotation. Update with what you\'re wearing.</p>' +
                 '<div style="margin-top:10px">' +
                   '<span class="tag">Streetwear</span>' +
-                  '<span class="tag">Essentials</span>' +
+                  '<span class="tag">Nike</span>' +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -635,7 +676,33 @@
                 '<div style="margin-top:10px">' +
                   '<span class="tag">Vanilla JS</span>' +
                   '<span class="tag">Claude</span>' +
-                  '<span class="tag">Nano Banana</span>' +
+                  '<span class="tag">Imagen 4.0</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+
+        case 'stable':
+          return '' +
+            '<div class="room-content content-agents">' +
+              '<div class="room-content-card">' +
+                '<h3>The Agents</h3>' +
+                '<p>Six AI agents running the ranch. Each one has a job.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Goggins</span>' +
+                  '<span class="tag">Cody</span>' +
+                  '<span class="tag">Hunter</span>' +
+                  '<span class="tag">Salena</span>' +
+                  '<span class="tag">Jabba</span>' +
+                  '<span class="tag">Brandy</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-status">' +
+              '<div class="room-content-card">' +
+                '<h3>Agent Dashboard</h3>' +
+                '<p>Real-time agent status and activity logs.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<a href="https://agent.danehouse.io" target="_blank" rel="noopener">Open Dashboard &rarr;</a>' +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -647,13 +714,13 @@
 
     // ========== ROOM DATA ==========
     const ROOMS = {
-      front: {
-        name: 'Front',
-        slug: 'front',
+      gate: {
+        name: 'Gate',
+        slug: 'gate',
         gradient: 'linear-gradient(180deg, #0a0a0a 0%, #1a1814 50%, #0a0a0a 100%)',
-        bgImage: 'images/front.jpg',
+        bgImage: 'images/gate.png',
         beacons: [
-          { targetRoom: 'lounge', left: 50, top: 72, direction: 'enter', tooltip: 'Enter House' }
+          { targetRoom: 'lounge', left: 50, top: 75, direction: 'enter', tooltip: 'Enter Ranch' }
         ],
         hotspots: [],
         disabled: false
@@ -662,10 +729,11 @@
         name: 'Lounge',
         slug: 'lounge',
         gradient: 'linear-gradient(180deg, #1a1510 0%, #2a2018 50%, #0e0c08 100%)',
-        bgImage: 'images/lounge.jpg',
+        bgImage: 'images/lounge.png',
         beacons: [
           { targetRoom: 'kitchen', left: 5, top: 45, direction: 'left', tooltip: 'Kitchen' },
-          { targetRoom: 'closet', left: 92, top: 55, direction: 'right', tooltip: 'Closet' }
+          { targetRoom: 'closet', left: 92, top: 55, direction: 'right', tooltip: 'Closet' },
+          { targetRoom: 'court', left: 50, top: 12, direction: 'up', tooltip: 'Court' }
         ],
         hotspots: [
           { left: 28, top: 75, label: 'Now Playing' },
@@ -678,7 +746,7 @@
         name: 'Kitchen',
         slug: 'kitchen',
         gradient: 'linear-gradient(180deg, #0e0c08 0%, #1a1610 50%, #0a0806 100%)',
-        bgImage: 'images/kitchen.jpg',
+        bgImage: 'images/kitchen.png',
         beacons: [
           { targetRoom: 'lounge', left: 92, top: 50, direction: 'right', tooltip: 'Lounge' },
           { targetRoom: 'backyard', left: 5, top: 30, direction: 'left', tooltip: 'Backyard' }
@@ -694,10 +762,10 @@
         name: 'Court',
         slug: 'court',
         gradient: 'linear-gradient(180deg, #1a1610 0%, #2a2018 50%, #0e0c08 100%)',
-        bgImage: 'images/court.jpg',
+        bgImage: 'images/court.png',
         beacons: [
           { targetRoom: 'lounge', left: 8, top: 88, direction: 'down', tooltip: 'Lounge' },
-          { targetRoom: 'backyard', left: 92, top: 30, direction: 'right', tooltip: 'Backyard' }
+          { targetRoom: 'gym', left: 92, top: 50, direction: 'right', tooltip: 'Gym' }
         ],
         hotspots: [
           { left: 50, top: 35, label: 'My Kicks' },
@@ -706,19 +774,35 @@
         ],
         disabled: false
       },
+      gym: {
+        name: 'Gym',
+        slug: 'gym',
+        gradient: 'linear-gradient(180deg, #1a1510 0%, #2a2018 50%, #0e0c08 100%)',
+        bgImage: 'images/gym.png',
+        beacons: [
+          { targetRoom: 'court', left: 8, top: 50, direction: 'left', tooltip: 'Court' },
+          { targetRoom: 'backyard', left: 92, top: 50, direction: 'right', tooltip: 'Backyard' }
+        ],
+        hotspots: [
+          { left: 40, top: 55, label: 'Current Routine' },
+          { left: 65, top: 40, label: 'Fitness Goals' },
+          { left: 25, top: 70, label: 'Progress' }
+        ],
+        disabled: false
+      },
       backyard: {
         name: 'Backyard',
         slug: 'backyard',
         gradient: 'linear-gradient(180deg, #0a0a10 0%, #1a1820 50%, #0a0a0a 100%)',
-        bgImage: 'images/backyard.jpg',
+        bgImage: 'images/backyard.png',
         beacons: [
           { targetRoom: 'kitchen', left: 8, top: 50, direction: 'left', tooltip: 'Kitchen' },
-          { targetRoom: 'court', left: 92, top: 50, direction: 'right', tooltip: 'Court' }
+          { targetRoom: 'gym', left: 92, top: 30, direction: 'right', tooltip: 'Gym' },
+          { targetRoom: 'stable', left: 50, top: 12, direction: 'up', tooltip: 'Stable' }
         ],
         hotspots: [
-          { left: 26, top: 62, label: 'Meet The Dog' },
-          { left: 75, top: 60, label: 'Recent Trip' },
-          { left: 50, top: 30, label: 'Outdoor Life' }
+          { left: 50, top: 65, label: 'Meet The Dog' },
+          { left: 30, top: 45, label: 'Outdoor Life' }
         ],
         disabled: false
       },
@@ -726,7 +810,7 @@
         name: 'Closet',
         slug: 'closet',
         gradient: 'radial-gradient(ellipse at 50% 40%, #2a2018 0%, #1a1410 40%, #0a0806 100%)',
-        bgImage: 'images/closet.jpg',
+        bgImage: 'images/closet.png',
         beacons: [
           { targetRoom: 'lounge', left: 8, top: 50, direction: 'left', tooltip: 'Lounge' },
           { targetRoom: 'lab', left: 92, top: 50, direction: 'right', tooltip: 'Lab' }
@@ -742,10 +826,10 @@
         name: 'Lab',
         slug: 'lab',
         gradient: 'linear-gradient(180deg, #1a1210 0%, #2a1e18 50%, #0e0a08 100%)',
-        bgImage: 'images/lab.jpg',
+        bgImage: 'images/lab.png',
         beacons: [
-          { targetRoom: 'court', left: 8, top: 30, direction: 'left', tooltip: 'Court' },
-          { targetRoom: 'closet', left: 92, top: 30, direction: 'right', tooltip: 'Closet' }
+          { targetRoom: 'closet', left: 8, top: 50, direction: 'left', tooltip: 'Closet' },
+          { targetRoom: 'stable', left: 92, top: 50, direction: 'right', tooltip: 'Stable' }
         ],
         hotspots: [
           { left: 28, top: 35, label: 'Current Build' },
@@ -753,11 +837,30 @@
           { left: 52, top: 47, label: 'Latest Ship' }
         ],
         disabled: false
+      },
+      stable: {
+        name: 'Stable',
+        slug: 'stable',
+        gradient: 'linear-gradient(180deg, #1a1810 0%, #2a2418 50%, #0e0c08 100%)',
+        bgImage: 'images/stable.png',
+        beacons: [
+          { targetRoom: 'backyard', left: 8, top: 50, direction: 'left', tooltip: 'Backyard' },
+          { targetRoom: 'lab', left: 92, top: 50, direction: 'right', tooltip: 'Lab' }
+        ],
+        hotspots: [
+          { left: 20, top: 45, label: 'Goggins' },
+          { left: 35, top: 50, label: 'Cody' },
+          { left: 50, top: 45, label: 'Hunter' },
+          { left: 65, top: 50, label: 'Salena' },
+          { left: 75, top: 45, label: 'Jabba' },
+          { left: 85, top: 50, label: 'Brandy' }
+        ],
+        disabled: false
       }
     };
 
     // ========== STATE ==========
-    let currentRoom = 'front';
+    let currentRoom = 'gate';
     let isTransitioning = false;
     let exploreOpen = false;
 
@@ -779,7 +882,7 @@
         case 'right': return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
         case 'up':    return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>';
         case 'down':  return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-        case 'enter': return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+        case 'enter': return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>';
         default:      return '<svg class="'+cls+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>';
       }
     }
@@ -787,9 +890,10 @@
     function getBeaconLabel(b) {
       const target = ROOMS[b.targetRoom];
       const name = target ? target.name : b.tooltip;
-      if (b.direction === 'enter') return 'Enter ' + name + ' \u2192';
-      if (b.direction === 'left' || b.direction === 'up') return '\u2190 Enter ' + name;
-      return 'Enter ' + name + ' \u2192';
+      if (b.direction === 'enter') return 'Enter ' + name + ' \u2193';
+      if (b.direction === 'left' || b.direction === 'up') return '\u2190 ' + name;
+      if (b.direction === 'down') return name + ' \u2193';
+      return name + ' \u2192';
     }
 
     // ========== RENDER ROOM ==========
@@ -928,7 +1032,7 @@
     function getInitialRoom() {
       const hash = location.hash.replace('#', '');
       if (hash && ROOMS[hash]) return hash;
-      return 'front';
+      return 'gate';
     }
 
     window.addEventListener('popstate', () => {
