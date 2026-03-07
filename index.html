@@ -160,6 +160,13 @@
     .room-content {
       position: absolute; pointer-events: auto; z-index: 3;
       color: #fff; font-size: 14px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+    .room-content.visible {
+      opacity: 1; transform: translateY(0);
+      pointer-events: auto;
     }
 
     .room-content-card {
@@ -386,19 +393,37 @@
 
     /* ========== HOTSPOTS ========== */
     .hotspot {
-      position: absolute; width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.65); cursor: pointer;
+      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.7); cursor: pointer;
       transform: translate(-50%, -50%); z-index: 8;
-      transition: all 0.2s ease; border: none; padding: 0;
+      transition: all 0.25s ease; border: none; padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hotspot::before {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      width: 12px; height: 12px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: transparent; border: 1.5px solid rgba(255,255,255,0.4);
+      animation: hotspot-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes hotspot-pulse {
+      0%, 100% { width: 12px; height: 12px; opacity: 1; }
+      50% { width: 28px; height: 28px; opacity: 0; }
     }
     .hotspot::after {
-      content: ''; position: absolute; top: -6px; left: -6px;
-      width: 22px; height: 22px; border-radius: 50%; background: transparent;
+      content: ''; position: absolute; top: -12px; left: -12px;
+      width: 36px; height: 36px; border-radius: 50%; background: transparent;
     }
     .hotspot:hover {
-      background: rgba(255, 255, 255, 0.95);
-      transform: translate(-50%, -50%) scale(1.4);
+      background: #fff;
+      transform: translate(-50%, -50%) scale(1.3);
     }
+    .hotspot.active {
+      background: var(--warm-gold);
+      transform: translate(-50%, -50%) scale(1.3);
+      box-shadow: 0 0 12px rgba(212, 176, 96, 0.5);
+    }
+    .hotspot.active::before { border-color: rgba(212, 176, 96, 0.4); }
     .hotspot-tooltip {
       position: absolute; bottom: calc(100% + 12px); left: 50%;
       transform: translateX(-50%); white-space: nowrap;
@@ -407,7 +432,7 @@
       opacity: 0; transition: opacity 0.15s ease; pointer-events: none;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
     }
-    .hotspot:hover .hotspot-tooltip { opacity: 1; }
+    .hotspot:hover .hotspot-tooltip, .hotspot.active .hotspot-tooltip { opacity: 1; }
 
     /* ========== BOTTOM BAR ========== */
     .bottom-bar {
@@ -489,8 +514,8 @@
       .beacon-label { font-size: 12px; }
       .beacon.beacon-enter { height: 48px; min-width: 48px; border-radius: 24px; }
       .beacon.beacon-enter .beacon-icon { width: 18px; height: 18px; }
-      .hotspot { width: 10px; height: 10px; }
-      .hotspot::after { top: -10px; left: -10px; width: 30px; height: 30px; }
+      .hotspot { width: 11px; height: 11px; }
+      .hotspot::after { top: -12px; left: -12px; width: 36px; height: 36px; }
       .hotspot-tooltip { font-size: 12px; padding: 4px 10px; }
       .gate-title h1 { font-size: clamp(36px, 12vw, 64px); }
       .room-content-card { max-width: 220px; padding: 14px 16px; }
@@ -617,7 +642,7 @@
 
         case 'lounge':
           return '' +
-            '<div class="room-content content-mood">' +
+            '<div class="room-content content-mood" data-content="lounge-mood">' +
               '<div class="room-content-card">' +
                 '<h3>Current Mood</h3>' +
                 '<p>Locked in. Building things that matter.</p>' +
@@ -627,19 +652,26 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-thought">' +
+            '<div class="room-content content-thought" data-content="lounge-playing">' +
               '<div class="room-content-card">' +
                 '<h3>Now Playing</h3>' +
-                '<p>Update this with whatever is on rotation.</p>' +
+                '<p>Travis Scott &mdash; FE!N ft. Playboi Carti</p>' +
                 '<div style="margin-top:8px">' +
-                  '<span class="tag">Playlist</span>' +
+                  '<span class="tag">Hip-Hop</span>' +
+                  '<span class="tag">On Repeat</span>' +
                 '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="lounge-thought" style="top:45%;right:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Featured Thought</h3>' +
+                '<p>The best time to start was yesterday. The second best time is now.</p>' +
               '</div>' +
             '</div>';
 
         case 'kitchen':
           return '' +
-            '<div class="room-content content-diet">' +
+            '<div class="room-content content-diet" data-content="kitchen-diet">' +
               '<div class="room-content-card">' +
                 '<h3>Current Diet</h3>' +
                 '<p>High protein, clean eating. Meal prepping weekly.</p>' +
@@ -649,16 +681,36 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-recipe">' +
+            '<div class="room-content content-recipe" data-content="kitchen-recipe">' +
               '<div class="room-content-card">' +
                 '<h3>Favorite Recipe</h3>' +
-                '<p>Add your go-to recipe here. Swap it out anytime.</p>' +
+                '<p>Chicken shawarma bowl. Rice, hummus, pickled onions, garlic sauce.</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="kitchen-prep" style="bottom:40%;right:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Meal Prep</h3>' +
+                '<p>Sunday cook. 5 containers. Zero excuses for the week.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Batch Cook</span>' +
+                  '<span class="tag">Sunday</span>' +
+                '</div>' +
               '</div>' +
             '</div>';
 
         case 'court':
           return '' +
-            '<div class="room-content content-stats">' +
+            '<div class="room-content content-kicks" data-content="court-kicks">' +
+              '<div class="room-content-card">' +
+                '<h3>My Kicks</h3>' +
+                '<p>Current basketball shoe rotation.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Nike</span>' +
+                  '<span class="tag">Jordan</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-stats" data-content="court-raptors">' +
               '<div class="room-content-card">' +
                 '<h3>Toronto Raptors</h3>' +
                 '<p style="font-size:22px;font-weight:700;margin-bottom:4px">We The North</p>' +
@@ -668,14 +720,10 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-kicks">' +
+            '<div class="room-content" data-content="court-highlight" style="bottom:35%;right:5%">' +
               '<div class="room-content-card">' +
-                '<h3>My Kicks</h3>' +
-                '<p>Current basketball shoe rotation.</p>' +
-                '<div style="margin-top:10px">' +
-                  '<span class="tag">Nike</span>' +
-                  '<span class="tag">Jordan</span>' +
-                '</div>' +
+                '<h3>Top Highlight</h3>' +
+                '<p>Vince Carter &mdash; 2000 Dunk Contest. The greatest dunk of all time. No debate.</p>' +
               '</div>' +
             '</div>' +
             '<div class="mini-game-container">' +
@@ -700,7 +748,7 @@
 
         case 'gym':
           return '' +
-            '<div class="room-content content-routine">' +
+            '<div class="room-content content-routine" data-content="gym-routine">' +
               '<div class="room-content-card">' +
                 '<h3>Current Routine</h3>' +
                 '<p>Push / Pull / Legs. 6 days a week.</p>' +
@@ -710,7 +758,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-goals">' +
+            '<div class="room-content content-goals" data-content="gym-goals">' +
               '<div class="room-content-card">' +
                 '<h3>Fitness Goals</h3>' +
                 '<p>Stay consistent. Progressive overload. No excuses.</p>' +
@@ -719,11 +767,20 @@
                   '<span class="tag">Discipline</span>' +
                 '</div>' +
               '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="gym-progress" style="bottom:40%;left:50%;transform:translateX(-50%)">' +
+              '<div class="room-content-card">' +
+                '<h3>Progress</h3>' +
+                '<p>225 bench. 315 squat. 405 deadlift. Always chasing the next plate.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">PRs</span>' +
+                '</div>' +
+              '</div>' +
             '</div>';
 
         case 'backyard':
           return '' +
-            '<div class="room-content content-dog">' +
+            '<div class="room-content content-dog" data-content="backyard-dog">' +
               '<div class="room-content-card">' +
                 '<h3>Meet The Dog</h3>' +
                 '<p>The dalmatian. Follow her adventures.</p>' +
@@ -731,11 +788,17 @@
                   '<a href="https://instagram.com" target="_blank" rel="noopener">Follow on Instagram &rarr;</a>' +
                 '</div>' +
               '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="backyard-outdoor" style="top:20%;left:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Outdoor Life</h3>' +
+                '<p>Sunsets, fire pit sessions, and good energy. The backyard is where ideas happen.</p>' +
+              '</div>' +
             '</div>';
 
         case 'closet':
           return '' +
-            '<div class="room-content content-outfit">' +
+            '<div class="room-content content-outfit" data-content="closet-fit">' +
               '<div class="room-content-card">' +
                 '<h3>Today\'s Fit</h3>' +
                 '<p>Current outfit rotation. Update with what you\'re wearing.</p>' +
@@ -745,7 +808,13 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-grail">' +
+            '<div class="room-content" data-content="closet-rotation" style="bottom:40%;left:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Rotation</h3>' +
+                '<p>Nike Tech Fleece. Jordan 4s. Essentials hoodie. Keep it clean, keep it simple.</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content content-grail" data-content="closet-grail">' +
               '<div class="room-content-card">' +
                 '<h3>Grail Piece</h3>' +
                 '<p>That one piece in the collection. Showcase it here.</p>' +
@@ -754,7 +823,7 @@
 
         case 'lab':
           return '' +
-            '<div class="room-content content-build">' +
+            '<div class="room-content content-build" data-content="lab-build">' +
               '<div class="room-content-card">' +
                 '<h3>Current Build</h3>' +
                 '<p>DaneHouse &mdash; a room-based interactive brand experience.</p>' +
@@ -764,7 +833,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-stack">' +
+            '<div class="room-content content-stack" data-content="lab-stack">' +
               '<div class="room-content-card">' +
                 '<h3>Tech Stack</h3>' +
                 '<p>HTML, CSS, JS &mdash; vanilla. AI-generated imagery. Claude Code.</p>' +
@@ -774,31 +843,60 @@
                   '<span class="tag">Imagen 4.0</span>' +
                 '</div>' +
               '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="lab-ship" style="bottom:35%;right:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Latest Ship</h3>' +
+                '<p>OpenClaw v3 &mdash; 8 AI agents, 16 cron jobs, fully autonomous sales engine.</p>' +
+                '<div style="margin-top:10px">' +
+                  '<span class="tag">Shipped</span>' +
+                  '<span class="tag">2026</span>' +
+                '</div>' +
+              '</div>' +
             '</div>';
 
         case 'stable':
           return '' +
-            '<div class="room-content content-agents">' +
+            '<div class="room-content" data-content="stable-goggins" style="bottom:35%;left:5%">' +
               '<div class="room-content-card">' +
-                '<h3>The Agents</h3>' +
-                '<p>Six AI agents running the ranch. Each one has a job.</p>' +
-                '<div style="margin-top:10px">' +
-                  '<span class="tag">Goggins</span>' +
-                  '<span class="tag">Cody</span>' +
-                  '<span class="tag">Hunter</span>' +
-                  '<span class="tag">Salena</span>' +
-                  '<span class="tag">Jabba</span>' +
-                  '<span class="tag">Brandy</span>' +
-                '</div>' +
+                '<h3>Goggins</h3>' +
+                '<p>The Accountability Agent. Tracks tasks, deadlines, and goals. No excuses tolerated.</p>' +
+                '<div style="margin-top:10px"><span class="tag">Task Ops</span></div>' +
               '</div>' +
             '</div>' +
-            '<div class="room-content content-status">' +
+            '<div class="room-content" data-content="stable-cody" style="bottom:35%;left:25%">' +
               '<div class="room-content-card">' +
-                '<h3>Agent Dashboard</h3>' +
-                '<p>Real-time agent status and activity logs.</p>' +
-                '<div style="margin-top:10px">' +
-                  '<a href="https://agent.danehouse.io" target="_blank" rel="noopener">Open Dashboard &rarr;</a>' +
-                '</div>' +
+                '<h3>Cody</h3>' +
+                '<p>The Code Agent. Reviews PRs, writes tests, ships features. Your dev teammate.</p>' +
+                '<div style="margin-top:10px"><span class="tag">Engineering</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="stable-hunter" style="top:20%;left:30%">' +
+              '<div class="room-content-card">' +
+                '<h3>Hunter</h3>' +
+                '<p>The Lead Gen Agent. Scrapes prospects, enriches data, fills the pipeline.</p>' +
+                '<div style="margin-top:10px"><span class="tag">Sales Intel</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="stable-salena" style="top:20%;right:30%">' +
+              '<div class="room-content-card">' +
+                '<h3>Salena</h3>' +
+                '<p>The Outreach Agent. Cold emails, follow-ups, meeting booking. Never sleeps.</p>' +
+                '<div style="margin-top:10px"><span class="tag">Outreach</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="stable-jabba" style="bottom:35%;right:25%">' +
+              '<div class="room-content-card">' +
+                '<h3>Jabba</h3>' +
+                '<p>The CRM Agent. Manages deals, tracks conversations, updates pipelines.</p>' +
+                '<div style="margin-top:10px"><span class="tag">CRM</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="room-content" data-content="stable-brandy" style="bottom:35%;right:5%">' +
+              '<div class="room-content-card">' +
+                '<h3>Brandy</h3>' +
+                '<p>The Content Agent. Writes posts, schedules socials, manages the brand voice.</p>' +
+                '<div style="margin-top:10px"><span class="tag">Content</span></div>' +
               '</div>' +
             '</div>';
 
@@ -831,9 +929,9 @@
           { targetRoom: 'court', left: 50, top: 12, direction: 'up', tooltip: 'Court' }
         ],
         hotspots: [
-          { left: 28, top: 75, label: 'Now Playing' },
-          { left: 18, top: 57, label: 'Current Mood' },
-          { left: 82, top: 68, label: 'Featured Thought' }
+          { left: 28, top: 75, label: 'Now Playing', contentId: 'lounge-playing' },
+          { left: 18, top: 57, label: 'Current Mood', contentId: 'lounge-mood' },
+          { left: 82, top: 68, label: 'Featured Thought', contentId: 'lounge-thought' }
         ],
         disabled: false
       },
@@ -847,9 +945,9 @@
           { targetRoom: 'backyard', left: 5, top: 30, direction: 'left', tooltip: 'Backyard' }
         ],
         hotspots: [
-          { left: 50, top: 63, label: 'Current Diet' },
-          { left: 15, top: 40, label: 'Favorite Recipe' },
-          { left: 28, top: 55, label: 'Meal Prep' }
+          { left: 50, top: 63, label: 'Current Diet', contentId: 'kitchen-diet' },
+          { left: 15, top: 40, label: 'Favorite Recipe', contentId: 'kitchen-recipe' },
+          { left: 28, top: 55, label: 'Meal Prep', contentId: 'kitchen-prep' }
         ],
         disabled: false
       },
@@ -863,9 +961,9 @@
           { targetRoom: 'gym', left: 92, top: 50, direction: 'right', tooltip: 'Gym' }
         ],
         hotspots: [
-          { left: 50, top: 35, label: 'My Kicks' },
-          { left: 35, top: 60, label: 'Raptors Live' },
-          { left: 70, top: 50, label: 'Top Highlight' }
+          { left: 50, top: 35, label: 'My Kicks', contentId: 'court-kicks' },
+          { left: 35, top: 60, label: 'Raptors Live', contentId: 'court-raptors' },
+          { left: 70, top: 50, label: 'Top Highlight', contentId: 'court-highlight' }
         ],
         disabled: false
       },
@@ -879,9 +977,9 @@
           { targetRoom: 'backyard', left: 92, top: 50, direction: 'right', tooltip: 'Backyard' }
         ],
         hotspots: [
-          { left: 40, top: 55, label: 'Current Routine' },
-          { left: 65, top: 40, label: 'Fitness Goals' },
-          { left: 25, top: 70, label: 'Progress' }
+          { left: 40, top: 55, label: 'Current Routine', contentId: 'gym-routine' },
+          { left: 65, top: 40, label: 'Fitness Goals', contentId: 'gym-goals' },
+          { left: 25, top: 70, label: 'Progress', contentId: 'gym-progress' }
         ],
         disabled: false
       },
@@ -896,8 +994,8 @@
           { targetRoom: 'stable', left: 50, top: 12, direction: 'up', tooltip: 'Stable' }
         ],
         hotspots: [
-          { left: 50, top: 65, label: 'Meet The Dog' },
-          { left: 30, top: 45, label: 'Outdoor Life' }
+          { left: 50, top: 65, label: 'Meet The Dog', contentId: 'backyard-dog' },
+          { left: 30, top: 45, label: 'Outdoor Life', contentId: 'backyard-outdoor' }
         ],
         disabled: false
       },
@@ -911,9 +1009,9 @@
           { targetRoom: 'lab', left: 92, top: 50, direction: 'right', tooltip: 'Lab' }
         ],
         hotspots: [
-          { left: 12, top: 32, label: "Today's Fit" },
-          { left: 12, top: 48, label: 'Rotation' },
-          { left: 88, top: 32, label: 'Grail Piece' }
+          { left: 12, top: 32, label: "Today's Fit", contentId: 'closet-fit' },
+          { left: 12, top: 48, label: 'Rotation', contentId: 'closet-rotation' },
+          { left: 88, top: 32, label: 'Grail Piece', contentId: 'closet-grail' }
         ],
         disabled: false
       },
@@ -927,9 +1025,9 @@
           { targetRoom: 'stable', left: 92, top: 50, direction: 'right', tooltip: 'Stable' }
         ],
         hotspots: [
-          { left: 28, top: 35, label: 'Current Build' },
-          { left: 48, top: 33, label: 'Tech Stack' },
-          { left: 52, top: 47, label: 'Latest Ship' }
+          { left: 28, top: 35, label: 'Current Build', contentId: 'lab-build' },
+          { left: 48, top: 33, label: 'Tech Stack', contentId: 'lab-stack' },
+          { left: 52, top: 47, label: 'Latest Ship', contentId: 'lab-ship' }
         ],
         disabled: false
       },
@@ -943,12 +1041,12 @@
           { targetRoom: 'lab', left: 92, top: 50, direction: 'right', tooltip: 'Lab' }
         ],
         hotspots: [
-          { left: 20, top: 45, label: 'Goggins' },
-          { left: 35, top: 50, label: 'Cody' },
-          { left: 50, top: 45, label: 'Hunter' },
-          { left: 65, top: 50, label: 'Salena' },
-          { left: 75, top: 45, label: 'Jabba' },
-          { left: 85, top: 50, label: 'Brandy' }
+          { left: 20, top: 45, label: 'Goggins', contentId: 'stable-goggins' },
+          { left: 35, top: 50, label: 'Cody', contentId: 'stable-cody' },
+          { left: 50, top: 45, label: 'Hunter', contentId: 'stable-hunter' },
+          { left: 65, top: 50, label: 'Salena', contentId: 'stable-salena' },
+          { left: 75, top: 45, label: 'Jabba', contentId: 'stable-jabba' },
+          { left: 85, top: 50, label: 'Brandy', contentId: 'stable-brandy' }
         ],
         disabled: false
       }
@@ -1039,6 +1137,13 @@
           dot.style.left = h.left + '%';
           dot.style.top = h.top + '%';
           dot.innerHTML = '<span class="hotspot-tooltip">' + h.label + '</span>';
+          if (h.contentId) {
+            dot.setAttribute('data-target', h.contentId);
+            dot.addEventListener('click', function(e) {
+              e.stopPropagation();
+              toggleContent(h.contentId, dot);
+            });
+          }
           roomSection.appendChild(dot);
         });
       }
@@ -1047,11 +1152,53 @@
       updateMobileMenuActive(slug);
     }
 
+    // ========== HOTSPOT CONTENT SYSTEM ==========
+    var activeContentId = null;
+
+    function toggleContent(contentId, hotspotEl) {
+      var allContent = roomScene.querySelectorAll('[data-content]');
+      var allHotspots = roomSection.querySelectorAll('.hotspot');
+
+      if (activeContentId === contentId) {
+        // Clicking same hotspot — dismiss
+        dismissAllContent();
+        return;
+      }
+
+      // Dismiss any currently open
+      allContent.forEach(function(el) { el.classList.remove('visible'); });
+      allHotspots.forEach(function(el) { el.classList.remove('active'); });
+
+      // Show the target
+      var target = roomScene.querySelector('[data-content="' + contentId + '"]');
+      if (target) {
+        target.classList.add('visible');
+        activeContentId = contentId;
+        if (hotspotEl) hotspotEl.classList.add('active');
+      }
+    }
+
+    function dismissAllContent() {
+      var allContent = roomScene.querySelectorAll('[data-content]');
+      var allHotspots = roomSection.querySelectorAll('.hotspot');
+      allContent.forEach(function(el) { el.classList.remove('visible'); });
+      allHotspots.forEach(function(el) { el.classList.remove('active'); });
+      activeContentId = null;
+    }
+
+    // Dismiss content when clicking room background
+    roomSection.addEventListener('click', function(e) {
+      if (activeContentId && !e.target.closest('.hotspot') && !e.target.closest('.room-content') && !e.target.closest('.beacon') && !e.target.closest('.mini-game-container') && !e.target.closest('.game-overlay')) {
+        dismissAllContent();
+      }
+    });
+
     // ========== NAVIGATE ==========
     function navigateToRoom(slug) {
       if (isTransitioning || slug === currentRoom) return;
       if (!ROOMS[slug] || ROOMS[slug].disabled) return;
 
+      dismissAllContent();
       isTransitioning = true;
       window.scrollTo(0, 0);
       roomSection.classList.add('transitioning');
