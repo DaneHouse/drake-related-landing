@@ -77,7 +77,7 @@
     }
     header * { pointer-events: auto; }
 
-    .nav-left { display: flex; gap: 28px; align-items: center; }
+    .nav-left { display: flex; gap: 28px; align-items: center; max-width: calc(50% - 80px); }
     .nav-left a, .nav-left button {
       font-size: 14px; font-weight: 400; letter-spacing: 0.01em;
       transition: opacity 0.25s ease-in-out; white-space: nowrap; mix-blend-mode: difference;
@@ -101,6 +101,48 @@
     .nav-left a:hover, .nav-left button:hover { opacity: 1 !important; }
     .nav-right:hover a { opacity: 0.2; }
     .nav-right a:hover { opacity: 1 !important; }
+
+    /* Mobile hamburger */
+    .nav-hamburger {
+      display: none; width: 44px; height: 44px; cursor: pointer;
+      flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+      mix-blend-mode: difference; z-index: 51; -webkit-tap-highlight-color: transparent;
+    }
+    .nav-hamburger span {
+      display: block; width: 20px; height: 1.5px; background: #fff;
+      transition: all 0.3s ease; pointer-events: none;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    .mobile-menu {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.94); z-index: 49;
+      flex-direction: column; justify-content: center; align-items: center; gap: 2px;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu button {
+      font-size: 32px; font-weight: 400; color: #fff; padding: 10px 0;
+      transition: opacity 0.25s ease; background: none; border: none; cursor: pointer;
+      font-family: 'Helvetica Neue wf', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-menu button:active { opacity: 0.5; }
+    .mobile-menu button.active-room { color: var(--warm-gold); }
+    .mobile-menu .mobile-menu-divider {
+      width: 40px; height: 1px; background: rgba(255,255,255,0.15); margin: 16px 0;
+    }
+    .mobile-menu .mobile-menu-links {
+      display: flex; gap: 24px; margin-top: 8px;
+    }
+    .mobile-menu .mobile-menu-links a {
+      font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.5);
+      text-decoration: none; letter-spacing: 0.02em; text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .mobile-menu .mobile-menu-links a:active { color: #fff; }
 
     /* ========== GATE OVERLAY ========== */
     .gate-title {
@@ -263,13 +305,6 @@
     .game-result.swish { color: #4cff7c; }
     .game-result.miss { color: #ff4c4c; }
 
-    @media (max-width: 768px) {
-      .room-content-card { max-width: 240px; padding: 14px 16px; }
-      .room-content-card p { font-size: 13px; }
-      .mini-game-container { bottom: 4%; }
-      .game-score { font-size: 22px; }
-    }
-
     /* ========== MAIN CONTENT ========== */
     main { transition: filter 0.7s ease-in-out; }
     main.blurred { filter: blur(25px); pointer-events: none; }
@@ -381,7 +416,7 @@
       padding: 20px 24px; pointer-events: none;
     }
     .bottom-bar * { pointer-events: auto; }
-    .explore-trigger { cursor: pointer; transition: opacity 0.3s ease; }
+    .explore-trigger { cursor: pointer; transition: opacity 0.3s ease; -webkit-tap-highlight-color: transparent; }
     .explore-trigger:hover { opacity: 0.7; }
     .explore-text {
       font-size: 14px; font-weight: 400; letter-spacing: 0.01em; mix-blend-mode: difference;
@@ -397,6 +432,7 @@
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(ellipse at 50% 30%, #2a2218 0%, #1a1610 60%, #000 100%);
     }
+
     .footer-content {
       position: relative; z-index: 5; padding: 0 24px 80px;
       display: flex; flex-direction: column; align-items: flex-end;
@@ -435,28 +471,87 @@
 
     /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
-      header { padding: 12px 16px; }
-      .nav-left { gap: 16px; }
-      .nav-left a, .nav-left button, .nav-right a, .nav-center { font-size: 12px; }
+      header { padding: 14px 16px; }
+      .nav-left { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-center {
+        position: relative; left: auto; transform: none;
+        flex: 1; text-align: center;
+      }
+      .nav-right { display: none; }
       .bottom-bar { padding: 16px; }
       .explore-room-list { left: 16px; bottom: 60px; }
       .explore-room-list button { font-size: 28px; }
       .footer-content { padding: 0 16px 60px; }
-      .beacon { height: 32px; min-width: 32px; border-radius: 16px; }
-      .beacon .beacon-icon { width: 12px; height: 12px; }
-      .beacon:hover { padding: 0 12px; }
+      .beacon { height: 36px; min-width: 36px; border-radius: 18px; }
+      .beacon .beacon-icon { width: 14px; height: 14px; }
+      .beacon:hover { padding: 0 14px; }
       .beacon-label { font-size: 12px; }
-      .beacon.beacon-enter { height: 44px; min-width: 44px; border-radius: 22px; }
-      .beacon.beacon-enter .beacon-icon { width: 16px; height: 16px; }
-      .hotspot { width: 8px; height: 8px; }
+      .beacon.beacon-enter { height: 48px; min-width: 48px; border-radius: 24px; }
+      .beacon.beacon-enter .beacon-icon { width: 18px; height: 18px; }
+      .hotspot { width: 10px; height: 10px; }
+      .hotspot::after { top: -10px; left: -10px; width: 30px; height: 30px; }
       .hotspot-tooltip { font-size: 12px; padding: 4px 10px; }
-      .gate-title h1 { font-size: clamp(36px, 10vw, 64px); }
+      .gate-title h1 { font-size: clamp(36px, 12vw, 64px); }
+      .room-content-card { max-width: 220px; padding: 14px 16px; }
+      .room-content-card h3 { font-size: 10px; margin-bottom: 6px; }
+      .room-content-card p { font-size: 13px; line-height: 1.4; }
+      .room-content-card .tag { font-size: 10px; padding: 2px 6px; }
+      .mini-game-container { bottom: 4%; }
+      .game-score { font-size: 22px; }
+
+      /* Adjust content card positions for mobile */
+      .scene-lounge .content-mood { bottom: 8%; left: 4%; }
+      .scene-lounge .content-thought { top: 10%; right: 4%; }
+      .scene-kitchen .content-diet { bottom: 10%; left: 4%; }
+      .scene-kitchen .content-recipe { top: 10%; right: 4%; }
+      .scene-court .content-stats { top: 8%; left: 4%; }
+      .scene-court .content-kicks { bottom: 8%; right: 4%; }
+      .scene-gym .content-routine { bottom: 8%; left: 4%; }
+      .scene-gym .content-goals { top: 10%; right: 4%; }
+      .scene-backyard .content-dog { bottom: 8%; left: 4%; }
+      .scene-closet .content-outfit { bottom: 8%; left: 4%; }
+      .scene-closet .content-grail { top: 10%; right: 4%; }
+      .scene-lab .content-build { bottom: 8%; left: 4%; }
+      .scene-lab .content-stack { top: 10%; right: 4%; }
+      .scene-stable .content-agents { bottom: 8%; left: 4%; }
+      .scene-stable .content-status { top: 10%; right: 4%; }
+    }
+
+    @media (max-width: 390px) {
+      .room-content-card { max-width: 180px; padding: 12px 14px; }
+      .room-content-card p { font-size: 12px; }
+      .gate-title h1 { font-size: clamp(32px, 12vw, 56px); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Mobile menu (fullscreen overlay) -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button data-mobile-nav="gate" class="active-room">Gate</button>
+    <button data-mobile-nav="lounge">Lounge</button>
+    <button data-mobile-nav="kitchen">Kitchen</button>
+    <button data-mobile-nav="court">Court</button>
+    <button data-mobile-nav="gym">Gym</button>
+    <button data-mobile-nav="backyard">Backyard</button>
+    <button data-mobile-nav="closet">Closet</button>
+    <button data-mobile-nav="lab">Lab</button>
+    <button data-mobile-nav="stable">Stable</button>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-links">
+      <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/papadane" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://x.com/papadane" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+
   <header id="header">
+    <div class="nav-hamburger" id="navHamburger" role="button" tabindex="0" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <nav class="nav-left">
       <a href="#" data-nav="lounge">Lounge</a>
       <a href="#" data-nav="kitchen">Kitchen</a>
@@ -472,7 +567,7 @@
     </div>
     <nav class="nav-right">
       <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
-      <a href="#" target="_blank" rel="noopener">Resume</a>
+      <a href="https://linkedin.com/in/papadane" target="_blank" rel="noopener">LinkedIn</a>
     </nav>
   </header>
 
@@ -491,8 +586,8 @@
           <a href="https://x.com/papadane" target="_blank" rel="noopener">X (Twitter)</a>
         </div>
         <div class="footer-links">
-          <a href="mailto:hello@danehouse.dev">Email</a>
-          <a href="#" target="_blank" rel="noopener">Resume</a>
+          <a href="mailto:kassra@danehouse.io">Email</a>
+          <a href="https://danehouse.io" target="_blank" rel="noopener">DaneHouse.io</a>
           <a href="https://github.com/DaneHouse/drake-related-landing" target="_blank" rel="noopener">Source Code</a>
         </div>
       </div>
@@ -567,7 +662,7 @@
               '<div class="room-content-card">' +
                 '<h3>Toronto Raptors</h3>' +
                 '<p style="font-size:22px;font-weight:700;margin-bottom:4px">We The North</p>' +
-                '<p style="font-size:12px;color:rgba(255,255,255,0.5)">Live stats coming soon &mdash; NBA API integration</p>' +
+                '<p style="font-size:12px;color:rgba(255,255,255,0.5)">Live stats coming soon</p>' +
                 '<div style="margin-top:10px">' +
                   '<span class="tag">2024-25 Season</span>' +
                 '</div>' +
@@ -863,6 +958,7 @@
     let currentRoom = 'gate';
     let isTransitioning = false;
     let exploreOpen = false;
+    let mobileMenuOpen = false;
 
     // ========== DOM REFS ==========
     const roomSection = document.getElementById('roomSection');
@@ -873,6 +969,8 @@
     const header = document.getElementById('header');
     const main = document.getElementById('main');
     const exploreTrigger = document.getElementById('exploreTrigger');
+    const navHamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
 
     // ========== SVG ARROW HELPERS ==========
     function getArrowSvg(direction) {
@@ -905,7 +1003,7 @@
       if (room.bgImage) {
         roomBg.style.background = 'none';
         roomBg.innerHTML = '';
-        const imgLayer = document.createElement('div');
+        var imgLayer = document.createElement('div');
         imgLayer.className = 'room-bg-image';
         imgLayer.style.backgroundImage = 'url(' + room.bgImage + ')';
         roomBg.appendChild(imgLayer);
@@ -919,24 +1017,24 @@
       roomScene.innerHTML = getSceneHtml(slug);
 
       // Clear old beacons, hotspots
-      roomSection.querySelectorAll('.beacon, .hotspot').forEach(el => el.remove());
+      roomSection.querySelectorAll('.beacon, .hotspot').forEach(function(el) { el.remove(); });
 
       // Create beacons
-      room.beacons.forEach(b => {
-        const beacon = document.createElement('button');
+      room.beacons.forEach(function(b) {
+        var beacon = document.createElement('button');
         beacon.className = 'beacon' + (b.direction === 'enter' ? ' beacon-enter' : '');
         beacon.style.left = b.left + '%';
         beacon.style.top = b.top + '%';
         beacon.innerHTML = getArrowSvg(b.direction) +
           '<span class="beacon-label">' + getBeaconLabel(b) + '</span>';
-        beacon.addEventListener('click', () => navigateToRoom(b.targetRoom));
+        beacon.addEventListener('click', function() { navigateToRoom(b.targetRoom); });
         roomSection.appendChild(beacon);
       });
 
       // Create hotspots
       if (room.hotspots) {
-        room.hotspots.forEach(h => {
-          const dot = document.createElement('button');
+        room.hotspots.forEach(function(h) {
+          var dot = document.createElement('button');
           dot.className = 'hotspot';
           dot.style.left = h.left + '%';
           dot.style.top = h.top + '%';
@@ -946,6 +1044,7 @@
       }
 
       updateExploreActive(slug);
+      updateMobileMenuActive(slug);
     }
 
     // ========== NAVIGATE ==========
@@ -957,15 +1056,15 @@
       window.scrollTo(0, 0);
       roomSection.classList.add('transitioning');
 
-      setTimeout(() => {
+      setTimeout(function() {
         currentRoom = slug;
         renderRoom(slug);
         history.pushState(null, '', '#' + slug);
 
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
             roomSection.classList.remove('transitioning');
-            setTimeout(() => { isTransitioning = false; }, 450);
+            setTimeout(function() { isTransitioning = false; }, 450);
           });
         });
       }, 450);
@@ -974,14 +1073,14 @@
     // ========== EXPLORE OVERLAY ==========
     function buildExploreList() {
       exploreRoomList.innerHTML = '';
-      Object.values(ROOMS).forEach(room => {
-        const li = document.createElement('li');
+      Object.values(ROOMS).forEach(function(room) {
+        var li = document.createElement('li');
         if (room.disabled) li.classList.add('disabled');
         if (room.slug === currentRoom) li.classList.add('active');
-        const btn = document.createElement('button');
+        var btn = document.createElement('button');
         btn.textContent = room.name;
         btn.setAttribute('data-room', room.slug);
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', function() {
           if (room.disabled) return;
           navigateToRoom(room.slug);
           if (exploreOpen) toggleExplore();
@@ -992,8 +1091,8 @@
     }
 
     function updateExploreActive(slug) {
-      exploreRoomList.querySelectorAll('li').forEach(li => {
-        const btn = li.querySelector('button');
+      exploreRoomList.querySelectorAll('li').forEach(function(li) {
+        var btn = li.querySelector('button');
         if (btn && btn.getAttribute('data-room') === slug) li.classList.add('active');
         else li.classList.remove('active');
       });
@@ -1013,41 +1112,76 @@
     }
 
     exploreTrigger.addEventListener('click', toggleExplore);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && exploreOpen) toggleExplore(); });
-    exploreOverlay.addEventListener('click', (e) => {
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (mobileMenuOpen) toggleMobileMenu();
+        else if (exploreOpen) toggleExplore();
+      }
+    });
+    exploreOverlay.addEventListener('click', function(e) {
       if (e.target === exploreOverlay || !e.target.closest('.explore-room-list')) {
         if (exploreOpen) toggleExplore();
       }
     });
 
-    document.querySelectorAll('[data-nav]').forEach(link => {
-      link.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-nav]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
         e.preventDefault();
-        const target = link.getAttribute('data-nav');
+        var target = link.getAttribute('data-nav');
         if (target) { window.scrollTo(0, 0); navigateToRoom(target); if (exploreOpen) toggleExplore(); }
+      });
+    });
+
+    // ========== MOBILE MENU ==========
+    function toggleMobileMenu() {
+      mobileMenuOpen = !mobileMenuOpen;
+      navHamburger.classList.toggle('open', mobileMenuOpen);
+      mobileMenu.classList.toggle('open', mobileMenuOpen);
+      if (mobileMenuOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function updateMobileMenuActive(slug) {
+      mobileMenu.querySelectorAll('[data-mobile-nav]').forEach(function(btn) {
+        btn.classList.toggle('active-room', btn.getAttribute('data-mobile-nav') === slug);
+      });
+    }
+
+    navHamburger.addEventListener('click', toggleMobileMenu);
+
+    mobileMenu.querySelectorAll('[data-mobile-nav]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = btn.getAttribute('data-mobile-nav');
+        if (target) {
+          navigateToRoom(target);
+          toggleMobileMenu();
+        }
       });
     });
 
     // ========== HASH ROUTING ==========
     function getInitialRoom() {
-      const hash = location.hash.replace('#', '');
+      var hash = location.hash.replace('#', '');
       if (hash && ROOMS[hash]) return hash;
       return 'gate';
     }
 
-    window.addEventListener('popstate', () => {
-      const hash = location.hash.replace('#', '');
+    window.addEventListener('popstate', function() {
+      var hash = location.hash.replace('#', '');
       if (hash && ROOMS[hash] && hash !== currentRoom) {
         isTransitioning = true;
         window.scrollTo(0, 0);
         roomSection.classList.add('transitioning');
-        setTimeout(() => {
+        setTimeout(function() {
           currentRoom = hash;
           renderRoom(hash);
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
               roomSection.classList.remove('transitioning');
-              setTimeout(() => { isTransitioning = false; }, 450);
+              setTimeout(function() { isTransitioning = false; }, 450);
             });
           });
         }, 450);
@@ -1063,13 +1197,13 @@
     }
 
     // ========== BASKETBALL MINI-GAME ==========
-    let gameActive = false;
-    let gameMade = 0;
-    let gameAttempts = 0;
-    let gameShooting = false;
+    var gameActive = false;
+    var gameMade = 0;
+    var gameAttempts = 0;
+    var gameShooting = false;
 
     function startMiniGame() {
-      const overlay = document.getElementById('gameOverlay');
+      var overlay = document.getElementById('gameOverlay');
       if (!overlay) return;
       gameActive = true;
       gameMade = 0;
@@ -1079,27 +1213,27 @@
       updateGameScore();
       resetBall();
 
-      const court = document.getElementById('gameCourt');
+      var court = document.getElementById('gameCourt');
       if (court) court.addEventListener('click', shootBall);
     }
 
     function closeMiniGame() {
-      const overlay = document.getElementById('gameOverlay');
+      var overlay = document.getElementById('gameOverlay');
       if (!overlay) return;
       gameActive = false;
       overlay.classList.remove('active');
 
-      const court = document.getElementById('gameCourt');
+      var court = document.getElementById('gameCourt');
       if (court) court.removeEventListener('click', shootBall);
     }
 
     function updateGameScore() {
-      const el = document.getElementById('gameScore');
+      var el = document.getElementById('gameScore');
       if (el) el.textContent = gameMade + ' / ' + gameAttempts;
     }
 
     function resetBall() {
-      const ball = document.getElementById('gameBall');
+      var ball = document.getElementById('gameBall');
       if (!ball) return;
       ball.classList.remove('shooting');
       ball.style.transition = 'none';
@@ -1114,11 +1248,11 @@
       gameShooting = true;
       gameAttempts++;
 
-      const ball = document.getElementById('gameBall');
-      const result = document.getElementById('gameResult');
+      var ball = document.getElementById('gameBall');
+      var result = document.getElementById('gameResult');
       if (!ball || !result) return;
 
-      const made = Math.random() < 0.45;
+      var made = Math.random() < 0.45;
 
       ball.style.transition = 'all 0.6s cubic-bezier(0.2, 0.8, 0.3, 1)';
       ball.classList.add('shooting');
@@ -1128,13 +1262,13 @@
         ball.style.left = '50%';
         ball.style.transform = 'translateX(-50%) scale(0.5)';
       } else {
-        const side = Math.random() > 0.5 ? '58%' : '42%';
+        var side = Math.random() > 0.5 ? '58%' : '42%';
         ball.style.bottom = '72%';
         ball.style.left = side;
         ball.style.transform = 'translateX(-50%) scale(0.6)';
       }
 
-      setTimeout(() => {
+      setTimeout(function() {
         if (made) {
           gameMade++;
           result.textContent = 'Swish!';
@@ -1145,15 +1279,15 @@
         }
         updateGameScore();
 
-        setTimeout(() => {
+        setTimeout(function() {
           result.className = 'game-result';
           ball.style.transition = 'none';
           ball.style.opacity = '0';
 
-          setTimeout(() => {
+          setTimeout(function() {
             resetBall();
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
+            requestAnimationFrame(function() {
+              requestAnimationFrame(function() {
                 ball.style.transition = 'opacity 0.3s ease';
                 ball.style.opacity = '1';
                 gameShooting = false;
