@@ -144,14 +144,19 @@
     }
     .mobile-menu .mobile-menu-links a:active { color: #fff; }
 
-    /* ========== GATE OVERLAY ========== */
-    .gate-title {
-      position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%);
+    /* ========== GATE CREST ========== */
+    .gate-crest {
+      position: absolute; top: 26%; left: 50%; transform: translate(-50%, -50%);
       z-index: 4; pointer-events: none; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
-    .gate-title h1 {
+    .gate-crest img {
+      width: clamp(60px, 10vw, 120px); height: auto;
+      filter: brightness(0) invert(1) drop-shadow(0 2px 20px rgba(0,0,0,0.5));
+    }
+    .gate-crest h1 {
       font-family: 'Superstudio', 'Helvetica Neue wf', Helvetica, Arial, sans-serif;
-      font-size: clamp(48px, 8vw, 96px); font-weight: 400; letter-spacing: 0.06em;
+      font-size: clamp(36px, 6vw, 72px); font-weight: 400; letter-spacing: 0.1em;
       text-transform: uppercase; color: #fff;
       text-shadow: 0 2px 40px rgba(0,0,0,0.6), 0 0 80px rgba(0,0,0,0.3);
     }
@@ -517,7 +522,8 @@
       .hotspot { width: 11px; height: 11px; }
       .hotspot::after { top: -12px; left: -12px; width: 36px; height: 36px; }
       .hotspot-tooltip { font-size: 12px; padding: 4px 10px; }
-      .gate-title h1 { font-size: clamp(36px, 12vw, 64px); }
+      .gate-crest h1 { font-size: clamp(28px, 10vw, 52px); }
+      .gate-crest img { width: clamp(50px, 14vw, 80px); }
       .room-content-card { max-width: 220px; padding: 14px 16px; }
       .room-content-card h3 { font-size: 10px; margin-bottom: 6px; }
       .room-content-card p { font-size: 13px; line-height: 1.4; }
@@ -546,7 +552,7 @@
     @media (max-width: 390px) {
       .room-content-card { max-width: 180px; padding: 12px 14px; }
       .room-content-card p { font-size: 12px; }
-      .gate-title h1 { font-size: clamp(32px, 12vw, 56px); }
+      .gate-crest h1 { font-size: clamp(24px, 10vw, 44px); }
     }
   </style>
 </head>
@@ -636,7 +642,8 @@
       switch (slug) {
         case 'gate':
           return '' +
-            '<div class="gate-title">' +
+            '<div class="gate-crest">' +
+              '<img src="images/logo.png" alt="DaneHouse">' +
               '<h1>DaneHouse</h1>' +
             '</div>';
 
