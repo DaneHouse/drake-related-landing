@@ -138,7 +138,7 @@
       display: flex; gap: 24px; margin-top: 8px;
     }
     .mobile-menu .mobile-menu-links a {
-      font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.5);
+      font-size: 14px; font: weight 400px; color: rgba(255,255,255,0.5);
       text-decoration: none; letter-spacing: 0.02em; text-transform: uppercase;
       transition: color 0.2s ease;
     }
@@ -146,18 +146,18 @@
 
     /* ========== GATE CREST ========== */
     .gate-crest {
-      position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+      position: absolute; top: 56%; left: 45%; transform: translate(-50%, -50%);
       z-index: 4; pointer-events: none; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      display: flex; flex-direction: column; align-items: center; gap: 86px;
     }
     .gate-crest img {
-      width: clamp(120px, 18vw, 240px); height: auto;
+      width: clamp(50px, 56vw, 160px); height: auto;
       filter: brightness(0) invert(1) drop-shadow(0 4px 30px rgba(0,0,0,0.6));
     }
     .gate-crest h1 {
       font-family: 'Superstudio', 'Helvetica Neue wf', Helvetica, Arial, sans-serif;
-      font-size: clamp(40px, 7vw, 84px); font-weight: 400; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #fff;
+      font-size: clamp(24px, 3.5vw, 48px); font-weight: 400; letter-spacing: 0.12em;
+      line-height: 0.9; color: #fff;
       text-shadow: 0 2px 40px rgba(0,0,0,0.6), 0 0 80px rgba(0,0,0,0.3);
     }
 
@@ -593,9 +593,7 @@
       <a href="#" data-nav="lab">Lab</a>
       <a href="#" data-nav="stable">Stable</a>
     </nav>
-    <div class="nav-center">
-      <a href="#" data-nav="gate">DaneHouse</a>
-    </div>
+    <div class="nav-center"></div>
     <nav class="nav-right">
       <a href="https://github.com/papadane" target="_blank" rel="noopener">GitHub</a>
       <a href="https://linkedin.com/in/papadane" target="_blank" rel="noopener">LinkedIn</a>
@@ -643,8 +641,8 @@
         case 'gate':
           return '' +
             '<div class="gate-crest">' +
+              '<h1>DANE<br>HOUSE</h1>' +
               '<img src="images/logo.png" alt="DaneHouse">' +
-              '<h1>DaneHouse</h1>' +
             '</div>';
 
         case 'lounge':
